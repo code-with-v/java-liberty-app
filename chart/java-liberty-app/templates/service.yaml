@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "liberty-app.fullname" . }}
+  name: {{ template "fullname" . }}
   labels:
-    {{- include "liberty-app.labels" . | nindent 4 }}
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port.http }}
-      targetPort: http
+    - port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
       protocol: TCP
-      name: http
-    - port: {{ .Values.service.port.https }}
-      targetPort: https
-      protocol: TCP
-      name: https
+      name: {{ .Values.service.name }}
   selector:
-    {{- include "liberty-app.selectorLabels" . | nindent 4 }}
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}
