@@ -1,43 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
   labels:
-    app: {{ template "name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    app: "{{  .Chart.Name }}"
+    chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
+  name: "{{  .Chart.Name }}-deployment"
 spec:
   replicas: {{ .Values.replicaCount }}
-  selector:
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector: 
     matchLabels:
-      app: {{ template "name" . }}
-      release: {{ .Release.Name }}
+      app: "{{  .Chart.Name }}"
+      version: "current"
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
-        release: {{ .Release.Name }}
+        app: "{{  .Chart.Name }}"
+        version: "current"
     spec:
-      imagePullSecrets:
-        - name: {{ .Values.image.pullSecret }}
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - containerPort: {{ .Values.service.internalPort }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.service.internalPort }}
-          readinessProbe:
-            httpGet:
-              path: /
-              port: {{ .Values.service.internalPort }}
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end }}
+      - env:
+        - name: PORT
+          value: "{{ .Values.service.servicePort }}"
+        - name: APPLICATION_NAME
+          value: "{{ .Release.Name }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: "{{  .Chart.Name  }}"
+{{ if .Values.istio.enabled }}
+{{ else }}
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 9080
+            scheme: HTTP
+          initialDelaySeconds: 20
+{{ end }}
+        resources:
+          requests:
+            cpu: "{{ .Values.image.resources.requests.cpu }}"
+            memory: "{{ .Values.image.resources.requests.memory }}"
