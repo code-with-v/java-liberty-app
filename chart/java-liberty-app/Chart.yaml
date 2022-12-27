@@ -1,4 +1,4 @@
 apiVersion: v1
 description: A Helm chart for Kubernetes
-name: javalibertyapptmani20221227
+name: java-liberty-app-new
 version: 1.0.0
