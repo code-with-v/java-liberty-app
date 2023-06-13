@@ -2,7 +2,7 @@
 variable "ibmcloud_api_key" {
   description = "IBM Cloud API key"
   type        = string
-  default = "5JQVcqELWEvfJ1dAfKx1IRtgHNnoUuR7JmvZlV8YjJAr"
+  default = "xxxxxxxxxxxxxxxxxxxxxx"
 }
 
 variable "code_engine_build_output_secret" {
