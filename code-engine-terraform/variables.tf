@@ -2,13 +2,11 @@
 variable "ibmcloud_api_key" {
   description = "IBM Cloud API key"
   type        = string
-  default = "xxxxxxxxxxxxxxxxxxxxxx"
+  default = ""
 }
-
-variable "code_engine_build_output_secret" {
-  description = "The secret that is required to access the image registry. Make sure that the secret is granted with push permissions towards the specified container registry namespace."
-  type        = string
-  default     = "ce-auto-icr-private-us-south"
+variable "email" {
+  type = string
+  default = "gttservices1@gmail.com"
 }
 
 variable "namespace_name" {
@@ -33,5 +31,5 @@ variable "authRegitry" {
 
 variable "projectName" {
   type = string
-  default = "JLApp-DE11"
+  default = "JLApp-DE12"
 }

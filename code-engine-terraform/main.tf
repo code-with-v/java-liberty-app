@@ -29,13 +29,25 @@ resource "ibm_code_engine_project" "jlapp_project" {
 resource "ibm_code_engine_app" "jlapp_app" {
   project_id      = ibm_code_engine_project.jlapp_project.project_id
   name            = var.application_name
-# image_reference = "icr.io/codeengine/helloworld" 
   image_reference = "${var.imageURLRegistry}/${var.namespace_name}/${var.application_name}"
-  image_secret    = var.code_engine_build_output_secret
+  image_secret    = ibm_code_engine_secret.code_engine_registry_access_secret.name
   image_port =  "9080"
 
   depends_on = [
+    ibm_code_engine_secret.code_engine_registry_access_secret,
     docker_image.image,
     docker_registry_image.image-registry
   ]
+}
+
+resource "ibm_code_engine_secret" "code_engine_registry_access_secret" {
+  project_id = ibm_code_engine_project.jlapp_project.project_id
+  name       = "my-registry-secret"
+  format     = "registry"
+  data       = {
+    "username" = "iamapikey"
+    "password" = var.ibmcloud_api_key
+    "server"   = var.imageURLRegistry
+    "email"    = var.email
+  }
 }
