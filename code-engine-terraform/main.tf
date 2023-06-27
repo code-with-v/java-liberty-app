@@ -15,9 +15,8 @@ resource "docker_registry_image" "image-registry" {
 resource "docker_image" "image" {
   name = "${var.authRegitry}/${var.namespace_name}/${var.application_name}"
   build {
-    context = "${path.cwd}/java-liberty-app"
-    tag = ["${var.imageURLRegistry}/${var.namespace_name}/${var.application_name}:latest","${var.authRegitry}/${var.namespace_name}/${var.application_name}:latest"]
-    
+    context = "../"
+    tag = ["${var.imageURLRegistry}/${var.namespace_name}/${var.application_name}:latest","${var.authRegitry}/${var.namespace_name}/${var.application_name}:latest"]   
   }
 }
 

@@ -31,5 +31,5 @@ variable "authRegitry" {
 
 variable "projectName" {
   type = string
-  default = "JLApp-DE12"
+  default = "JLApp-DE14"
 }
